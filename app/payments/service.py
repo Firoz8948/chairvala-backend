@@ -3,6 +3,7 @@ import hmac
 import json
 import logging
 import uuid
+from urllib.parse import urlparse
 
 from fastapi import HTTPException
 from fastapi.responses import RedirectResponse
@@ -62,31 +63,41 @@ def get_public_config() -> dict:
     }
 
 
+def _frontend_hostname() -> str:
+    raw = (settings.FRONTEND_URL or "").strip()
+    if not raw:
+        return ""
+    if "://" not in raw:
+        raw = f"https://{raw}"
+    return (urlparse(raw).hostname or "").lower().removeprefix("www.")
+
+
+def _orders_email_domain() -> str:
+    return _frontend_hostname() or "chairvala.com"
+
+
 def _api_public_base() -> str:
     """Absolute API origin used for PayU surl/furl callbacks.
 
     Preference:
     1. API_PUBLIC_URL (full URL, optional)
-    2. Derive from FRONTEND_URL for ChairDekho (api.chairdekho.in + API_V1_PREFIX)
+    2. Derive api.{host} from FRONTEND_URL in production
     3. Localhost for development
     """
     base = (settings.API_PUBLIC_URL or "").rstrip("/")
     if base:
         return base
 
-    frontend = (settings.FRONTEND_URL or "").lower()
     prefix = settings.API_V1_PREFIX or "/api/v1"
-    if "chairdekho.in" in frontend:
-        return f"https://api.chairdekho.in{prefix}"
-
-    if settings.ENVIRONMENT.lower() in {"production", "prod"}:
-        return f"https://api.chairdekho.in{prefix}"
+    host = _frontend_hostname()
+    if host and settings.ENVIRONMENT.lower() in {"production", "prod"}:
+        return f"https://api.{host}{prefix}"
 
     return f"http://localhost:8000{prefix}"
 
 
 def _frontend_base() -> str:
-    return (settings.FRONTEND_URL or "https://www.chairdekho.in").rstrip("/")
+    return (settings.FRONTEND_URL or "http://localhost:3000").rstrip("/")
 
 
 async def _build_checkout(
@@ -142,8 +153,8 @@ def _customer_email(customer: dict) -> str:
         return email
     phone = "".join(ch for ch in str(customer.get("mobile") or "") if ch.isdigit())
     if phone:
-        return f"{phone}@orders.chairdekho.in"
-    return "orders@chairdekho.in"
+        return f"{phone}@orders.{_orders_email_domain()}"
+    return f"orders@{_orders_email_domain()}"
 
 
 async def create_payment_order(
@@ -199,7 +210,7 @@ async def _create_payu_order(checkout: dict, customer: dict, user_id: int | None
     firstname = (customer.get("name") or "Customer")[:60]
     email = _customer_email(customer)
     phone = "".join(ch for ch in str(customer.get("mobile") or "") if ch.isdigit())[-10:]
-    productinfo = "ChairDekho Order"
+    productinfo = f"{settings.BRAND_NAME or 'Chairvala'} Order"
     udf1 = str(user_id or "")
     key = settings.PAYU_KEY
     salt = settings.PAYU_SALT

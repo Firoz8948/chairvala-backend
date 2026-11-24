@@ -154,7 +154,7 @@ async def seed_products():
                 )
 
         await session.commit()
-        print("ChairDekho sample products seeded")
+        print("Shree Ram Steel sample products seeded")
 
 
 if __name__ == "__main__":

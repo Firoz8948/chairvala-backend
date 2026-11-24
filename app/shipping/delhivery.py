@@ -15,6 +15,7 @@ from app.common import format_variant_info_label, serialize_shipment, utcnow
 from app.config import settings
 from app.database import AsyncSessionLocal
 from app.models import Order, Shipment
+from app.product_names import strip_product_name_brand_suffix
 from app.shipping import service as sr
 
 logger = logging.getLogger("shipping.delhivery")
@@ -50,9 +51,6 @@ def _auth_headers() -> dict[str, str]:
         "Authorization": f"Token {_clean(settings.DELHIVERY_API_TOKEN)}",
         "Accept": "application/json",
     }
-
-
-_BRAND_SUFFIX_RE = re.compile(r"\s*[|\u2013\u2014-]\s*chair\s*dekho(\.com)?\s*$", re.I)
 
 
 def _safe(value: Any, limit: int = 250) -> str:
@@ -105,7 +103,7 @@ def _products_desc(order: Order) -> str:
     parts = []
     for item in order.items or []:
         label = format_variant_info_label(item.variant_info)
-        base = _BRAND_SUFFIX_RE.sub("", item.name or "").strip() or "Item"
+        base = strip_product_name_brand_suffix(item.name) or "Item"
         name = f"{base} ({label})" if label else base
         parts.append(f"{name} x{int(item.quantity or 1)}")
     return _safe(", ".join(parts), 500) or "Chairs"
@@ -142,7 +140,7 @@ def _build_manifest(order: Order, reference: str) -> dict:
         "shipment_height": str(height),
         "shipping_mode": _clean(settings.DELHIVERY_SHIPPING_MODE) or "Surface",
         "address_type": "home",
-        "seller_name": "ChairDekho",
+        "seller_name": settings.BRAND_NAME or "Chairvala",
         "seller_add": "",
         "seller_inv": order.order_id,
         "waybill": "",

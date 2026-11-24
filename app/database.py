@@ -469,6 +469,9 @@ async def connect_db():
 
     await seed_admin()
     await ensure_reels_category()
+    from app.banners.seed import ensure_default_banners
+
+    await ensure_default_banners()
     print("PostgreSQL connected and tables ready")
 
 
@@ -555,7 +558,7 @@ async def ensure_reels_category():
 
 
 async def seed_default_categories():
-    """Seed default chair categories and map existing products."""
+    """Seed default product categories and map existing products."""
     import re
 
     from sqlalchemy import select, update
@@ -570,13 +573,11 @@ async def seed_default_categories():
 
     defaults = [
         {"name": "Plastic Chairs", "position": 0},
-        {"name": "Arm Chairs", "position": 1},
-        {"name": "Armless Chairs", "position": 2},
-        {"name": "Dining Chairs", "position": 3},
-        {"name": "Garden Chairs", "position": 4},
-        {"name": "Office Chairs", "position": 5},
-        {"name": "Kids Chairs", "position": 6},
-        {"name": "Plastic Stools", "position": 7},
+        {"name": "Plastic Stools & Tables", "position": 1},
+        {"name": "Plastic Household", "position": 2},
+        {"name": "Steel Furniture", "position": 3},
+        {"name": "Steel Racks & Storage", "position": 4},
+        {"name": "Steel Household", "position": 5},
     ]
 
     async with AsyncSessionLocal() as session:

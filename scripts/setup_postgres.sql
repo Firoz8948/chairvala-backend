@@ -1,16 +1,16 @@
--- ChairDekho — PostgreSQL setup (run as superuser postgres)
+-- Shree Ram Steel — PostgreSQL setup (run as superuser postgres)
 
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'chairdekho') THEN
-    CREATE ROLE chairdekho WITH LOGIN PASSWORD 'chairdekho';
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'shreeramsteel') THEN
+    CREATE ROLE shreeramsteel WITH LOGIN PASSWORD 'shreeramsteel';
   ELSE
-    ALTER ROLE chairdekho WITH LOGIN PASSWORD 'chairdekho';
+    ALTER ROLE shreeramsteel WITH LOGIN PASSWORD 'shreeramsteel';
   END IF;
 END
 $$;
 
-SELECT 'CREATE DATABASE chairdekho OWNER chairdekho'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'chairdekho')\gexec
+SELECT 'CREATE DATABASE shreeramsteel OWNER shreeramsteel'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'shreeramsteel')\gexec
 
-GRANT ALL PRIVILEGES ON DATABASE chairdekho TO chairdekho;
+GRANT ALL PRIVILEGES ON DATABASE shreeramsteel TO shreeramsteel;

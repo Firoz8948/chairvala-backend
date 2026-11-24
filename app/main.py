@@ -79,7 +79,7 @@ app.include_router(reviews_router, prefix=f"{prefix}/reviews", tags=["Reviews"])
 
 @app.get("/")
 async def root():
-    return {"message": "ChairDekho API", "docs": "/docs"}
+    return {"message": "Chairvala API", "docs": "/docs"}
 
 
 @app.get("/health")

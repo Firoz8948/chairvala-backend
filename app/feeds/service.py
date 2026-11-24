@@ -12,11 +12,10 @@ from sqlalchemy.orm import selectinload
 
 from app.config import settings
 from app.models import Product, ProductVariant
+from app.product_names import strip_product_name_brand_suffix
 
 
-FEED_BRAND = "ChairDekho"
-
-_BRAND_SUFFIX_RE = re.compile(r"\s*[|\u2013\u2014-]\s*chair\s*dekho(\.com)?\s*$", re.I)
+FEED_BRAND = settings.BRAND_NAME or "Chairvala"
 
 # First match wins; checked against name, then product_type metafield, then category.
 _GOOGLE_CATEGORIES = [
@@ -38,14 +37,22 @@ _GOOGLE_CATEGORIES = [
         re.compile(r"arm\s*chair|with\s+arms?", re.I),
         "Furniture > Chairs > Arm Chairs, Recliners & Sleeper Chairs",
     ),
+    (
+        re.compile(r"steel|iron|metal", re.I),
+        "Home & Garden > Household Supplies > Storage & Organization",
+    ),
+    (
+        re.compile(r"plastic|moulded|molded", re.I),
+        "Home & Garden > Kitchen & Dining > Kitchen & Dining Room Furniture",
+    ),
 ]
-_DEFAULT_GOOGLE_CATEGORY = "Furniture > Chairs"
+_DEFAULT_GOOGLE_CATEGORY = "Home & Garden"
 _KIDS_RE = re.compile(r"\bkids?\b|child|baby", re.I)
 
 
 def _site_url() -> str:
     """Storefront origin for product links; must match the canonical (non-www) URLs."""
-    url = (settings.FRONTEND_URL or "https://chairdekho.in").rstrip("/")
+    url = (settings.FRONTEND_URL or "https://chairvala.com").rstrip("/")
     return re.sub(r"^(https?://)www\.", r"\1", url)
 
 
@@ -135,7 +142,7 @@ def product_to_feed_row(product: Product) -> dict:
     primary = _abs_image(images[0].url) if images else ""
     extra = [_abs_image(img.url) for img in images[1:5] if img.url]
     availability = "in stock" if _total_stock(product) > 0 else "out of stock"
-    title = _BRAND_SUFFIX_RE.sub("", _clean_text(product.name, 200)).strip()[:150]
+    title = strip_product_name_brand_suffix(_clean_text(product.name, 200))[:150]
     description = _clean_text(product.description) or f"{title} at an affordable price from {FEED_BRAND}."
     link = f"{_site_url()}/products/{product.slug}"
     material = _metafield(product, "material")
@@ -151,7 +158,7 @@ def product_to_feed_row(product: Product) -> dict:
         "image_link": primary,
         "additional_image_link": extra,
         "brand": FEED_BRAND,
-        "product_type": _clean_text(product.category, 200) or "Chairs",
+        "product_type": _clean_text(product.category, 200) or "Home & Garden",
         "google_product_category": _google_category(product),
         "age_group": _age_group(product),
         "color": _color(product),

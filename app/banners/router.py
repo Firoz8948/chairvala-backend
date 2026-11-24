@@ -56,9 +56,14 @@ async def delete_banner(
     admin=Depends(get_current_admin),
     db: AsyncSession = Depends(get_db),
 ):
-    deleted = await service.delete_banner(db, banner_id)
-    if not deleted:
+    outcome = await service.delete_banner(db, banner_id)
+    if outcome == "not_found":
         raise HTTPException(status_code=404, detail="Banner not found")
+    if outcome == "protected":
+        raise HTTPException(
+            status_code=403,
+            detail="The default desktop hero banner cannot be deleted. Hide it or add other slides instead.",
+        )
     return {"message": "Banner deleted"}
 
 
@@ -70,7 +75,12 @@ async def upload_banner_image(
     db: AsyncSession = Depends(get_db),
 ):
     url = await upload_file(file, "banners")
-    updated = await service.set_banner_image(db, banner_id, url)
-    if not updated:
+    outcome = await service.set_banner_image(db, banner_id, url)
+    if outcome == "not_found":
         raise HTTPException(status_code=404, detail="Banner not found")
-    return updated
+    if outcome == "protected":
+        raise HTTPException(
+            status_code=403,
+            detail="The default hero banner image cannot be replaced. Hide it or add other slides instead.",
+        )
+    return outcome

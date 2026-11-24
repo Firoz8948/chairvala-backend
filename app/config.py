@@ -7,17 +7,17 @@ _ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "ChairDekho"
+    APP_NAME: str = "Chairvala"
     ENVIRONMENT: str = "development"
     API_V1_PREFIX: str = "/api/v1"
     FRONTEND_URL: str = "http://localhost:3000"
-    # Public API base for PayU surl/furl (e.g. https://api.chairdekho.in/api/v1)
+    # Public API base for PayU surl/furl (e.g. https://api.chairvala.com/api/v1)
     API_PUBLIC_URL: str = ""
     # Comma-separated extra origins (e.g. preview URL + custom domain)
     CORS_ORIGINS: str = ""
 
     DATABASE_URL: str = (
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/chairdekho"
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/shreeramsteel"
     )
 
     JWT_SECRET_KEY: str = "change-me-in-production"
@@ -39,13 +39,13 @@ class Settings(BaseSettings):
     TWILIO_AUTH_TOKEN: str = ""
     TWILIO_FROM_NUMBER: str = ""
 
-    ADMIN_EMAIL: str = "admin@chairdekho.in"
+    ADMIN_EMAIL: str = "admin@chairvala.com"
     ADMIN_USERNAME: str = "admin"
     ADMIN_PASSWORD: str = "admin"
     # Locked storefront / notification identity (shown in Admin → Settings)
-    BRAND_NAME: str = "ChairDekho"
-    ADMIN_NOTIFY_PHONE: str = "9699164131"
-    ADMIN_NOTIFY_EMAIL: str = "brjangu29@gmail.com"
+    BRAND_NAME: str = "Chairvala"
+    ADMIN_NOTIFY_PHONE: str = "9004000201"
+    ADMIN_NOTIFY_EMAIL: str = "Sksteel2929@gmail.com"
 
     RAZORPAY_KEY_ID: str = ""
     RAZORPAY_KEY_SECRET: str = ""
@@ -117,9 +117,7 @@ class Settings(BaseSettings):
     GOOGLE_PLACES_API_KEY: str = ""
     # Optional; when empty the place is looked up once from GOOGLE_PLACE_QUERY
     GOOGLE_PLACE_ID: str = ""
-    GOOGLE_PLACE_QUERY: str = (
-        "Chairdekho, Umadevi Mandir, Bolinj Road, Nalasopara West, Vasai-Virar"
-    )
+    GOOGLE_PLACE_QUERY: str = "Shree Ram Steel, Umadevi Mandir, Bolinj Road"
     # Business Profile → "Ask for reviews" link; falls back to a writereview URL from the place id
     GOOGLE_REVIEW_URL: str = ""
     GOOGLE_REVIEWS_CACHE_HOURS: float = 12
@@ -127,9 +125,9 @@ class Settings(BaseSettings):
     # One-click switch between this admin panel and the paired store's admin.
     # The same ADMIN_SWITCH_SECRET (32+ chars) must be set on both backends; empty disables it.
     ADMIN_SWITCH_SECRET: str = ""
-    ADMIN_SWITCH_SITE: str = "chairdekho"
-    ADMIN_SWITCH_TARGET: str = "chakladekho"
-    ADMIN_SWITCH_TARGET_URL: str = "https://www.chakladekho.com"
+    ADMIN_SWITCH_SITE: str = "chairvala"
+    ADMIN_SWITCH_TARGET: str = ""
+    ADMIN_SWITCH_TARGET_URL: str = ""
 
     model_config = SettingsConfigDict(
         env_file=str(_ENV_FILE),
