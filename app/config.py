@@ -117,7 +117,9 @@ class Settings(BaseSettings):
     GOOGLE_PLACES_API_KEY: str = ""
     # Optional; when empty the place is looked up once from GOOGLE_PLACE_QUERY
     GOOGLE_PLACE_ID: str = ""
-    GOOGLE_PLACE_QUERY: str = "Shree Ram Steel, Umadevi Mandir, Bolinj Road"
+    GOOGLE_PLACE_QUERY: str = (
+        "Shree Krishna Steel, C2 Gokuldham row house Society, Jatra Nandur Naka Road, Nashik"
+    )
     # Business Profile → "Ask for reviews" link; falls back to a writereview URL from the place id
     GOOGLE_REVIEW_URL: str = ""
     GOOGLE_REVIEWS_CACHE_HOURS: float = 12

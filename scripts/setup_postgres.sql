@@ -1,4 +1,4 @@
--- Shree Ram Steel — PostgreSQL setup (run as superuser postgres)
+-- Shree Krishna Steel / Chairvala — PostgreSQL setup (run as superuser postgres)
 
 DO $$
 BEGIN

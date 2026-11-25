@@ -19,7 +19,7 @@ if (-not $env:PGPASSWORD) {
     )
 }
 
-Write-Host "Creating role and database for Shree Ram Steel..."
+Write-Host "Creating role and database for Chairvala (shreeramsteel DB name)..."
 & $Psql -U postgres -h localhost -f "$PSScriptRoot\setup_postgres.sql"
 if ($LASTEXITCODE -ne 0) { throw "SQL setup failed" }
 

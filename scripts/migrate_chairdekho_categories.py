@@ -1,4 +1,4 @@
-"""One-off: seed / replace categories with Shree Ram Steel product categories via SQL."""
+"""One-off: seed / replace categories with Shree Krishna Steel product categories via SQL."""
 import asyncio
 import os
 from pathlib import Path
@@ -74,7 +74,7 @@ async def main():
                     name,
                     slug,
                 )
-        print(f"Seeded {len(NEW)} Shree Ram Steel categories")
+        print(f"Seeded {len(NEW)} Shree Krishna Steel categories")
     finally:
         await conn.close()
 
